@@ -9,7 +9,7 @@
 			}
 		</style>
 		<title>Loc App Test</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Bootstrap -->
 		<link href="css/bootstrap.css" rel="stylesheet">
 		<link href="css/bootstrap.css.map" rel="stylesheet">
@@ -68,7 +68,7 @@
 					<div class="marginbottom10">
 						<form class="form-horizontal">
 							<div class="control-group">
-								<label class="control-label width170" > City : </label>
+								<label class="control-label width170" > Ville : </label>
 
 								<div class="control inline">
 									<select class="form-control inline width300" data-ng-model="selectedCity" data-ng-options="contract as contract.name for contract in  contractsList"></select>
@@ -133,7 +133,7 @@
 					</form>
 				</div>
 				<div class="col-xs-6">
-					<div style="height: 600px; width= 300px; margin-bottom: 20px;">
+					<div style="height: 500px; width= 300px; margin-bottom: 20px;">
 
 						<div class="main" style="height: 100%;"  google-map  center="map.center" zoom="map.zoom" draggable="true" options="map.options">
 
@@ -142,6 +142,85 @@
 					</div>
 				</div>
 			</div>
+			<!-- <div  class="row"> -->
+			<div  class="row">
+				<h3 data-ng-show="result.length > 0">Toutes les infos sur : <span class="label label-default">{{selectedActivityInfos.nom}}</span></h3>
+				<div  style="height: 300px; width= 300px; margin-bottom: 20px;">
+
+						<div data-ng-if="result.length > 0" class="activitymap" style="height: 100%;"  google-map  center="selectedActivitymap.center" zoom="selectedActivitymap.zoom" refresh="result.length > 0" draggable="true" options="selectedActivitymap.options">
+							<markers>
+							<marker coords='currentStationMapElmt.center'></marker>
+							<marker coords='selectedActivitymarker.center'></marker>
+							</markers>
+						</div>
+					</div>
+				<div  data-ng-show="result.length > 0"  class="col-xs-12">
+					<div class="marginbottom10">
+						<form class="form-horizontal">
+							<div class="control-group">
+								<label class="control-label width170" > Type d'accès : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.accessType}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Adresse : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.adresse}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Ligne bus : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.bus}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Ville : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.city}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Description: </label>
+								<div class="control inline">
+									{{selectedActivityInfos.description}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Gratuit : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.hasFee}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > TODO MEDIA: </label>
+								<div class="control inline">
+									{{selectedActivityInfos.media}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > TODO ORGA : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.organisateur}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Prix : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.price}}
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="col-xs-6">
+					
+					
+				</div>
+			</div>
+
+			<!-- {{selectedActivity}} -->
 		</div>
 
 		<script type="text/javascript" src="https://code.jquery.com/jquery.js"></script>

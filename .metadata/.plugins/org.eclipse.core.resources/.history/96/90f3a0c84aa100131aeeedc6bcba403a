@@ -1,0 +1,23 @@
+<div>
+        <div class="modal-header">
+            <h3>I'm a modal!</h3>
+        </div>
+        <div class="modal-body">
+        	{{selectedCategory}}
+           <select class="form-control inline width300" data-ng-model="$parent.selectedCategory" data-ng-options="cat.id as cat.name for cat in activitiesCategories"></select>
+           <button data-ng-click="getActivities()">Get what to do around !</button>
+           <div class="row">
+  <div class="col-xs-6 col-md-3">
+    <a href="#" class="thumbnail">
+      <img data-src="holder.js/100%x180" alt="...">
+    </a>
+  </div>
+
+</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+
+</div>

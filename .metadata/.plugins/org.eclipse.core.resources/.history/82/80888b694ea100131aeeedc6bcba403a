@@ -1,0 +1,43 @@
+<div>
+	<div class="modal-header">
+		<h3>Selectionner une catégorie</h3>
+	</div>
+	<div class="modal-body">
+		<select class="form-control inline width300" data-ng-model="$parent.selectedCategory" data-ng-options="cat.id as cat.name for cat in activitiesCategories"></select>
+		<button class="btn btn-default" data-ng-click="getActivities()">
+			Get what to do around !
+		</button>
+			<div class="margintop20" data-ng-repeat="activityPresentation in foundActivities">
+				
+				<div class="jumbotron marginbottom0">
+											<div class="control-group">
+							<label class="control-label width170"> <i class="glyphicon glyphicon-user"></i> Ville : </label>
+							<div class="control inline">
+					{{activityPresentation.city}} - {{activityPresentation.zipcode}}
+							</div>
+						</div>
+												<div class="control-group">
+							<label class="control-label width170"> <i class="glyphicon glyphicon-user"></i> Lieu : </label>
+							<div class="control inline">
+					{{activityPresentation.adresse}}
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label width170"> <i class="glyphicon glyphicon-user"></i> Nom de l'activité : </label>
+							<div class="control inline">
+					{{activityPresentation.nom}}
+							</div>
+						</div>
+ 					
+				</div>
+				<button class="btn btn-warning" data-ng-click="foundActivities.splice($index,1)">Not interesting</button>
+				</div>
+	</div>
+	<div class="modal-footer">
+
+		<button class="btn btn-warning" ng-click="cancel()">
+			Fermer
+		</button>
+	</div>
+
+</div>

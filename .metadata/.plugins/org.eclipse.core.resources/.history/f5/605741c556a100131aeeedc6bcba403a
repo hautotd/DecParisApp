@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html ng-app="velibApp">
+	<head>
+		<style>
+			html, body, #map-canvas {
+				height: 100%;
+				margin: 0px;
+				padding: 0px
+			}
+		</style>
+		<title>Loc App Test</title>
+		<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.css" rel="stylesheet">
+		<link href="css/bootstrap.css.map" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		<div class="container">
+			<nav class="navbar navbar-inverse shadow main-menu" role="navigation">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand">Velib</a>
+				</div>
+				<div style="height: auto;" class="navbar-collapse navbar-ex1-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Home <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="#">Action</a>
+								</li>
+								<li>
+									<a href="#">Another action</a>
+								</li>
+								<li>
+									<a href="#">Something else here</a>
+								</li>
+								<li>
+									<a href="#">Separated link</a>
+								</li>
+								<li>
+									<a href="#">One more separated link</a>
+								</li>
+							</ul>
+						</li>
+
+					</ul>
+				</div><!-- /.navbar-collapse -->
+			</nav>
+		</div>
+		<div class='main-container' data-ng-controller="mainCtrl" >
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="marginbottom10">
+						<form class="form-horizontal">
+							<div class="control-group">
+								<label class="control-label width170" > Ville : </label>
+
+								<div class="control inline">
+									<select class="form-control inline width300" data-ng-model="selectedCity" data-ng-options="contract as contract.name for contract in  contractsList"></select>
+									<button class="btn btn-default width50" data-ng-click="getVelibContracts()">
+										<i class="glyphicon glyphicon-repeat"></i>
+									</button>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Station : </label>
+
+								<div class="control inline">
+									<select class="form-control inline width300" data-ng-model="selectedStation" data-ng-options="station as station.name for station in stationList"></select>
+									<button class="btn btn-default width50" data-ng-click="getVelibStations()">
+										<i class="glyphicon glyphicon-repeat"></i>
+									</button>
+								</div>
+							</div>
+
+						</form>
+					</div>
+
+					<form class="form-horizontal">
+						<div class="control-group">
+							<label class="control-label width170" > Status : </label>
+
+							<span data-ng-show="selectedStation.status =='OPEN'" ><i class="glyphicon glyphicon-ok inline" style="color: green;"></i></span>
+
+							<span data-ng-show="selectedStation.status =='CLOSED'" ><i class="glyphicon glyphicon-remove inline" style="color: red;"></i></span>
+						</div>
+						<div class="control-group">
+							<label class="control-label width170"> <i class="glyphicon glyphicon-user"></i> Nom : </label>
+							<div class="control inline">
+								{{selectedStation.name}}
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label width170"><i class="glyphicon glyphicon-screenshot"></i> Latitude : </label>
+							<div class="control inline">
+								{{selectedStation.position.lat}}
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label width170"><i class="glyphicon glyphicon-screenshot"></i> Longitude : </label>
+							<div class="control inline">
+								{{selectedStation.position.lng}}
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label width170"><i class="glyphicon glyphicon-thumbs-up"></i> Nombre disponibles : </label>
+							<div class="control inline">
+								{{selectedStation.available_bikes}}
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label width170"><i class="glyphicon glyphicon-tasks"></i> Nombre total : </label>
+							<div class="control inline">
+								{{selectedStation.available_bike_stands}}
+							</div>
+						</div>
+
+					</form>
+				</div>
+				<div class="col-xs-6">
+					<div style="height: 600px; width= 300px; margin-bottom: 20px;">
+
+						<div class="main" style="height: 100%;"  google-map  center="map.center" zoom="map.zoom" draggable="true" options="map.options">
+
+							<marker  click="displayStationInfo()" coords='currentStationMapElmt.center'></marker>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div data-ng-show="result.length > 0" class="row">
+				<div class="col-xs-6">
+					<div class="marginbottom10">
+						<form class="form-horizontal">
+							<div class="control-group">
+								<label class="control-label width170" > Type d'accès : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.accessType}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Adresse : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.adresse}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Ligne bus : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.bus}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Ville : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.city}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Description: </label>
+								<div class="control inline">
+									{{selectedActivityInfos.description}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Gratuit : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.hasFee}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > TODO MEDIA: </label>
+								<div class="control inline">
+									{{selectedActivityInfos.media}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > TODO ORGA : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.organisateur}}
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label width170" > Prix : </label>
+								<div class="control inline">
+									{{selectedActivityInfos.price}}
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- {{selectedActivity}} -->
+		</div>
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery.js"></script>
+
+		<script  type="text/javascript" src="js/bootstrap.js"></script>
+		<script src="js/angular.js"></script>
+
+		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+		<script src="js/underscore.js"></script>
+		<script src="js/angular-google-maps.min.js"></script>
+		<script src="js/ui-bootstrap-tpls-0.10.0.min.js"></script>
+		<script src="js/index.js"></script>
+	</body>
+</html>

@@ -7,6 +7,10 @@
 	  display: inline-block;
 }
 
+.margintop10{margin-top: 10px;}
+.margintop20{margin-top: 20px;}
+
+.marginbottom0{margin-bottom: 0px;}
 .marginbottom10{margin-bottom: 10px;}
 .marginbottom50{margin-bottom: 50px;}
 .marginbottom60{margin-bottom: 60px;}
@@ -27,6 +31,15 @@
 .main .angular-google-map-container {
 height: 450px;
 width: 500px;
+margin-bottom: 5px;
+margin-top: 5px;
+border: 10px #fff solid;
+box-shadow: 0 0 5px #ccc;
+}
+
+.activitymap .angular-google-map-container {
+height: 300px;
+width: 100%;
 margin-bottom: 5px;
 margin-top: 5px;
 border: 10px #fff solid;

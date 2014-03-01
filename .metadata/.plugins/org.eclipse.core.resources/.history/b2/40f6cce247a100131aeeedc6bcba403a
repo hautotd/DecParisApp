@@ -1,0 +1,172 @@
+angular.module('velibApp', ['google-maps', 'ui.bootstrap']).value('apiKey', {
+	getApiKey : function() {
+		return 'd57483530575fe3f6a192f44b4869aa8dc6d9390';
+	}
+}).value('apiToken', {
+	getToken : function() {
+		return '700f6b0a7010364228d34a8342f27b66a1a1dc928ae483ebf77e9c6b023032f2';
+	}
+}).config(['$httpProvider',
+function($httpProvider) {
+	$httpProvider.defaults.useXDomain = true;
+	delete $httpProvider.defaults.headers.common['X-Requested-With'];
+}]).controller('mainCtrl', function($scope, apiKey, $http, $modal) {
+	$scope.selectedStation = {};
+	$scope.selectedStation.position = {};
+	$scope.selectedStation.position.lng = 2.297846;
+	$scope.selectedStation.position.lat = 48.856188;
+	
+	$scope.map = {
+		center : {
+			latitude : $scope.selectedStation.position.lat,
+			longitude : $scope.selectedStation.position.lng
+		},
+		zoom : 13,
+		options : {
+			disableDefaultUI : !0,
+			mapTypeControl : !1,
+			tilt : 45
+		}
+	};
+	
+	$scope.currentStationMapElmt = $scope.map;
+	$scope.stationList = [];
+	$scope.value = 10;
+	$scope.apiKey = apiKey.getApiKey();
+
+
+	$scope.$watch('selectedCity', function() {
+		$scope.getVelibStations();
+	});
+
+	$scope.getCoordObjectElem = function(marker) {
+		return {
+			latitude : marker.position.lat,
+			longitude : marker.position.lng
+		};
+	};
+
+	$scope.$watch('selectedStation', function() {
+		$scope.map.center = {
+			latitude : $scope.selectedStation.position.lat,
+			longitude : $scope.selectedStation.position.lng
+		};
+
+		$scope.currentStationMapElmt = {
+			center : {
+				latitude : $scope.selectedStation.position.lat,
+				longitude : $scope.selectedStation.position.lng
+			},
+			zoom : 1,
+			options : {
+				disableDefaultUI : !0,
+				mapTypeControl : !1,
+				tilt : 45
+			}
+		};
+	});
+
+	$scope.getVelibStations = function() {
+		$scope.apiKey = apiKey.getApiKey();
+		$http({
+			method : 'get',
+			url : 'https://api.jcdecaux.com/vls/v1/stations?HTTP/1.1',
+			params : {
+				contract : $scope.selectedCity.name,
+				apiKey : $scope.apiKey
+			}
+		}).success(function(data, status, headers, config) {
+			console.debug(data);
+			console.debug(status);
+			$scope.stationList = _.sortBy(data,'number');
+			$scope.selectedStation = $scope.stationList[0];
+		}).error(function(data) {
+			console.debug('oh snap');
+		});
+
+	};
+
+	$scope.getVelibContracts = function() {
+		$scope.apiKey = apiKey.getApiKey();
+		$http({
+			method : 'get',
+			url : 'https://api.jcdecaux.com/vls/v1/contracts?HTTP/1.1',
+			params : {
+				apiKey : $scope.apiKey
+			}
+		}).success(function(data, status, headers, config) {
+			console.debug(data);
+			console.debug(status);
+			$scope.contractsList = data;
+			$scope.selectedCity = $scope.contractsList[1];
+			$scope.getVelibStations();
+
+		}).error(function(data) {
+			console.debug('oh snap');
+		});
+
+	};
+
+	$scope.getVelibContracts();
+
+	$scope.displayStationInfo = function() {
+		var modalInstance = $modal.open({
+			templateUrl : 'views/modalInfoContent.html',
+			scope : $scope,
+			controller : function($scope, $modalInstance, apiToken) {
+				$scope.activitiesCategories = [];
+				
+					$scope.apiToken = apiToken.getToken();
+					$http({
+						method : 'get',
+						url : 'https://api.paris.fr:3000/data/1.2/QueFaire/get_categories/',
+						params : {
+							token : $scope.apiToken
+						}
+					}).success(function(data, status, headers, config) {
+						console.debug(data.data);
+						$scope.activitiesCategories = data.data;
+
+					}).error(function(data) {
+						console.debug('oh snap error during the categories call ! ');
+					});
+
+				$scope.getActivities = function(){
+					$http({
+						method : 'get',
+						url : 'https://api.paris.fr:3000/data/1.2/QueFaire/get_geo_activities/?token=' + $scope.apiToken + '&cid=' + $scope.selectedCategory + '&created=0&lat=' + $scope.currentStationMapElmt.lat + '&lon=' 
+						+ $scope.currentStationMapElmt.lng + '&radius=200&offset=1&limit=30',
+						params : {
+							token : $scope.apiToken
+						}
+					}).success(function(data, status, headers, config) {
+						console.debug(data.data);
+						$scope.activitiesCategories = data.data;
+
+					}).error(function(data) {
+						console.debug('oh snap error during the activity call !');
+					});
+
+				};
+
+				$scope.ok = function() {
+					$modalInstance.close();
+				};
+
+				$scope.cancel = function() {
+					$modalInstance.dismiss('cancel');
+				};
+			},
+			resolve : {
+				items : function() {
+
+				}
+			}
+		});
+		modalInstance.result.then(function() {
+
+		}, function() {
+			console.debug('Modal dismissed at: ' + new Date());
+		});
+	};
+});
